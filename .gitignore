@@ -1,0 +1,17 @@
+# Neovim
+# Plugin directory
+plugin/packer_compiled.lua
+
+# Lazy.nvim
+lazy-lock.json
+
+# LSP
+.luarc.json
+
+# Neovim
+.netrwhist
+*.log
+
+# OS specific
+.DS_Store
+thumbs.db
