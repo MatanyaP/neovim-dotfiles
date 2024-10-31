@@ -5,10 +5,28 @@ return {
     dependencies = {
       "williamboman/mason.nvim",
       "williamboman/mason-lspconfig.nvim",
-      "glepnir/lspsaga.nvim",
+      {
+        "nvimdev/lspsaga.nvim",
+        opts = {
+          symbol_in_winbar = {
+            enable = false,
+          },
+          lightbulb = {
+            enable = false,
+          },
+          ui = {
+            border = "rounded",
+          },
+        },
+        dependencies = {
+          "nvim-treesitter/nvim-treesitter",
+          "nvim-tree/nvim-web-devicons",
+        },
+      },
     },
-    opts = {
-      diagnostics = {
+    config = function()
+      -- Set up LSP diagnostics
+      vim.diagnostic.config {
         virtual_text = {
           prefix = "●",
           source = "if_many",
@@ -24,31 +42,57 @@ return {
         underline = true,
         update_in_insert = false,
         severity_sort = true,
-      },
-      inlay_hints = {
-        enabled = true,
-      },
-      capabilities = function()
-        local capabilities = vim.lsp.protocol.make_client_capabilities()
-        capabilities.textDocument.completion.completionItem.snippetSupport = true
-        capabilities.textDocument.completion.completionItem.preselectSupport = true
-        capabilities.textDocument.completion.completionItem.insertReplaceSupport = true
-        capabilities.textDocument.completion.completionItem.labelDetailsSupport = true
-        capabilities.textDocument.completion.completionItem.deprecatedSupport = true
-        capabilities.textDocument.completion.completionItem.commitCharactersSupport = true
-        capabilities.textDocument.completion.completionItem.documentationFormat = { "markdown", "plaintext" }
-        capabilities.textDocument.completion.completionItem.tagSupport = { valueSet = { 1 } }
-        return capabilities
-      end,
-      -- Common on_attach function for all LSP servers
-      on_attach = function(client, bufnr)
+      }
+
+      -- Set up capabilities
+      local capabilities = vim.lsp.protocol.make_client_capabilities()
+      capabilities.textDocument.completion.completionItem.snippetSupport = true
+      capabilities.textDocument.completion.completionItem.preselectSupport = true
+      capabilities.textDocument.completion.completionItem.insertReplaceSupport = true
+      capabilities.textDocument.completion.completionItem.labelDetailsSupport = true
+      capabilities.textDocument.completion.completionItem.deprecatedSupport = true
+      capabilities.textDocument.completion.completionItem.commitCharactersSupport = true
+      capabilities.textDocument.completion.completionItem.documentationFormat = { "markdown", "plaintext" }
+      capabilities.textDocument.completion.completionItem.tagSupport = { valueSet = { 1 } }
+
+      -- Common on_attach function
+      local on_attach = function(client, bufnr)
         -- Enable completion triggered by <c-x><c-o>
         vim.bo[bufnr].omnifunc = "v:lua.vim.lsp.omnifunc"
 
         -- Buffer local mappings
-        local opts = { buffer = bufnr }
+        local opts = { buffer = bufnr, noremap = true, silent = true }
+
+        -- Use a mix of native LSP and Lspsaga commands with fallbacks
+        vim.keymap.set("n", "K", function()
+          local ok, _ = pcall(require("lspsaga.hover").render_hover_doc)
+          if not ok then
+            vim.lsp.buf.hover()
+          end
+        end, opts)
+
+        vim.keymap.set("n", "gd", function()
+          local ok, _ = pcall(require("lspsaga.definition").preview_definition)
+          if not ok then
+            vim.lsp.buf.definition()
+          end
+        end, opts)
+
+        vim.keymap.set("n", "gr", function()
+          local ok, _ = pcall(require("lspsaga.finder").lsp_finder)
+          if not ok then
+            vim.lsp.buf.references()
+          end
+        end, opts)
+
+        vim.keymap.set("n", "gi", function()
+          local ok, _ = pcall(require("lspsaga.finder").lsp_finder)
+          if not ok then
+            vim.lsp.buf.implementation()
+          end
+        end, opts)
+
         vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
-        vim.keymap.set("n", "<leader>rf", vim.lsp.buf.references, opts)
         vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
         vim.keymap.set("n", "<leader>fm", function()
           vim.lsp.buf.format { async = true }
@@ -68,8 +112,10 @@ return {
             callback = vim.lsp.buf.clear_references,
           })
         end
-      end,
-      servers = {
+      end
+
+      -- Server configurations
+      local servers = {
         -- Python configuration
         pyright = {
           settings = {
@@ -108,8 +154,16 @@ return {
             },
           },
         },
-      },
-    },
+      }
+
+      -- Set up servers
+      local lspconfig = require "lspconfig"
+      for server, config in pairs(servers) do
+        config.capabilities = capabilities
+        config.on_attach = on_attach
+        lspconfig[server].setup(config)
+      end
+    end,
   },
   {
     "williamboman/mason.nvim",

@@ -7,12 +7,6 @@ map("n", "<leader>fb", "<cmd>Telescope current_buffer_fuzzy_find<CR>", opts)
 -- Terminal
 map("n", "<C-\\>", "<cmd>ToggleTerm<CR>", opts)
 
--- LSP
-map("n", "K", "<cmd>Lspsaga hover_doc<CR>", opts)
-map("n", "gi", "<cmd>Lspsaga finder imp<CR>", opts)
-map("n", "gd", "<cmd>Lspsaga goto_definition<CR>", opts)
-map("n", "gr", "<cmd>Lspsaga finder ref<CR>", opts)
-
 -- Window navigation
 map("n", "<C-h>", "<C-w>h", opts)
 map("n", "<C-j>", "<C-w>j", opts)
