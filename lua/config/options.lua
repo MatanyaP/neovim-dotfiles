@@ -17,6 +17,7 @@ vim.opt.termguicolors = true
 vim.opt.scrolloff = 8
 vim.opt.signcolumn = "yes"
 vim.opt.updatetime = 50
+vim.opt.spelllang = { "en_us" }
 
 -- Better UI
 vim.opt.showmode = false
@@ -41,9 +42,9 @@ vim.opt.undofile = true
 vim.opt.undolevels = 10000
 
 -- Performance
-vim.opt.updatetime = 200
-vim.opt.timeoutlen = 300
-vim.opt.redrawtime = 1500
+vim.opt.updatetime = 250
+vim.opt.timeoutlen = 400
+vim.opt.redrawtime = 2000
 vim.opt.ttimeoutlen = 10
 
 -- Better formatting

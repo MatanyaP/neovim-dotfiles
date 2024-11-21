@@ -1,27 +1,18 @@
+-- lua/plugins/illuminate.lua
 return {
   "RRethy/vim-illuminate",
   event = { "BufReadPost", "BufNewFile" },
   opts = {
-    providers = {
-      "lsp",
-      "treesitter",
-      "regex",
-    },
-    delay = 100,
-    filetypes_denylist = {
-      "dirbuf",
-      "dirvish",
-      "fugitive",
-      "neo-tree",
-      "TelescopePrompt",
-    },
-    under_cursor = true,
+    delay = 500,
     large_file_cutoff = 2000,
-    large_file_overrides = nil,
-    min_count_to_highlight = 1,
+    min_count_to_highlight = 2,
   },
-  config = function(_, opts)
-    require("illuminate").configure(opts)
+  config = function()
+    require("illuminate").configure {
+      delay = 500,
+      large_file_cutoff = 2000,
+      min_count_to_highlight = 2,
+    }
 
     local function map(key, dir, buffer)
       vim.keymap.set("n", key, function()
@@ -31,18 +22,5 @@ return {
 
     map("]]", "next")
     map("[[", "prev")
-
-    -- Clear illuminate on these events
-    vim.api.nvim_create_autocmd("TextChanged", {
-      callback = function()
-        require("illuminate").pause()
-      end,
-    })
-
-    vim.api.nvim_create_autocmd("TextChangedI", {
-      callback = function()
-        require("illuminate").pause()
-      end,
-    })
   end,
 }

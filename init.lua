@@ -11,3 +11,6 @@ require "config.lazy"
 require "config.options"
 require "config.keymaps"
 require "config.autocmds"
+
+-- personal project  game
+require "roguelike"
