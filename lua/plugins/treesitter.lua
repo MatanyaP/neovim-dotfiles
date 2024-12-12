@@ -16,11 +16,31 @@ return {
 			},
 			indent = { enable = true },
 			ensure_installed = {
-				"python",
+				-- Basic
 				"lua",
+				"vim",
+				"vimdoc",
+				"query",
+				-- Web
+				"html",
+				"css",
 				"javascript",
 				"typescript",
-				-- ... rest of your languages
+				"tsx",
+				"json",
+				"yaml",
+				-- Programming
+				"python",
+				-- Markup
+				"markdown",
+				"markdown_inline",
+				-- Shell
+				"bash",
+				-- Git
+				"git_config",
+				"git_rebase",
+				"gitcommit",
+				"gitignore",
 			},
 			incremental_selection = {
 				enable = true,

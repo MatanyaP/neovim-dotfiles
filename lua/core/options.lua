@@ -39,7 +39,7 @@ opt.incsearch = true
 
 -- Performance
 opt.synmaxcol = 240
-opt.updatetime = 50
+opt.updatetime = 250
 opt.hidden = true
 opt.history = 100
 

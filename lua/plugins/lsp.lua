@@ -50,7 +50,12 @@ return {
 			},
 		},
 		config = function(_, opts)
-			local capabilities = require("cmp_nvim_lsp").default_capabilities()
+			local capabilities = vim.tbl_deep_extend(
+				"force",
+				vim.lsp.protocol.make_client_capabilities(),
+				require("cmp_nvim_lsp").default_capabilities()
+			)
+
 			local lspconfig = require("lspconfig")
 
 			-- Setup diagnostics
@@ -155,17 +160,17 @@ return {
 					{ name = "buffer" },
 					{ name = "path" },
 				}),
-				formatting = {
-					format = function(entry, item)
-						local icons = require("config").icons.kinds
-						if icons[item.kind] then
-							item.kind = icons[item.kind] .. item.kind
-						end
-						return item
-					end,
-					fields = { "kind", "abbr", "menu" },
-					expandable_indicator = true,
-				},
+				-- formatting = {
+				-- 	format = function(entry, item)
+				-- 		local icons = require("config").icons.kinds
+				-- 		if icons[item.kind] then
+				-- 			item.kind = icons[item.kind] .. item.kind
+				-- 		end
+				-- 		return item
+				-- 	end,
+				-- 	fields = { "kind", "abbr", "menu" },
+				-- 	expandable_indicator = true,
+				-- },
 				experimental = {
 					ghost_text = {
 						hl_group = "LspCodeLens",

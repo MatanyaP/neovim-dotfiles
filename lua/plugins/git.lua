@@ -42,7 +42,7 @@ return {
 	},
 	{
 		"tpope/vim-fugitive",
-		cmd = { "Git", "G" },
+		event = "VeryLazy", -- Load earlier
 		keys = {
 			{ "<leader>gg", "<cmd>Git<cr>", desc = "Git status" },
 			{ "<leader>gp", "<cmd>Git push<cr>", desc = "Git push" },

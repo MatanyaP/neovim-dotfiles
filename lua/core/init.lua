@@ -1,11 +1,25 @@
 local M = {}
 
 function M.setup()
-	-- Load core modules in specific order
-	require("core.options")
-	require("core.autocmds")
-	require("core.keymaps").setup()
-	require("core.lazy") -- Load this last to ensure all settings are applied
+	-- Create a protected call wrapper
+	local function safe_require(module)
+		local ok, err = pcall(require, module)
+		if not ok then
+			vim.notify("Error loading " .. module .. "\n" .. err, vim.log.levels.ERROR)
+		end
+		return ok, err
+	end
+
+	-- Load core modules
+	safe_require("core.options")
+	safe_require("core.autocmds")
+	safe_require("core.lazy")
+
+	-- Load keymaps separately
+	local keymaps_ok, keymaps = safe_require("core.keymaps")
+	if keymaps_ok then
+		keymaps.setup()
+	end
 end
 
 return M

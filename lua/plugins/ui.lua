@@ -13,7 +13,7 @@ return {
 		event = "VeryLazy",
 		opts = {
 			options = {
-				theme = "rose-pine",
+				theme = "everforest",
 				icons_enabled = false,
 				component_separators = "|",
 				section_separators = "",
@@ -32,6 +32,28 @@ return {
 						sources = { "nvim_diagnostic" },
 						sections = { "error", "warn", "info", "hint" },
 					},
+					{
+						function()
+							local ok, context = pcall(require, "treesitter-context")
+							if not ok then
+								return ""
+							end
+
+							local context_data = context.get_context()
+							if not context_data or #context_data == 0 then
+								return ""
+							end
+
+							-- Get the last context entry (most specific/inner scope)
+							local node = context_data[#context_data]
+							if not node then
+								return ""
+							end
+
+							return "󰊕 " .. node[1]:match("^%s*(.-)%s*$") -- Strip whitespace
+						end,
+						color = { fg = "#7aa2f7" }, -- You can adjust the color to match your theme
+					},
 				},
 				lualine_x = {
 					"filetype",
@@ -48,6 +70,21 @@ return {
 				lualine_z = { "location" },
 			},
 			extensions = { "fugitive", "trouble", "lazy" },
+		},
+	},
+	{
+		"nvim-treesitter/nvim-treesitter-context",
+		event = "BufReadPre",
+		opts = {
+			enable = true,
+			max_lines = 3,
+			min_window_height = 0,
+			line_numbers = true,
+			multiline_threshold = 20,
+			trim_scope = "outer",
+			mode = "cursor",
+			separator = nil,
+			zindex = 20,
 		},
 	},
 	{

@@ -1,3 +1,4 @@
+local harpoon = require("harpoon")
 local M = {}
 
 local function map(mode, lhs, rhs, opts)
@@ -24,10 +25,10 @@ function M.setup()
 	map("i", "<C-s>", "<Cmd>w<CR>", { desc = "Save file in insert mode" })
 
 	-- Movement and Navigation
-	map("n", "<leader>h", "<C-w>h", { desc = "Move to left window" })
-	map("n", "<leader>j", "<C-w>j", { desc = "Move to bottom window" })
-	map("n", "<leader>k", "<C-w>k", { desc = "Move to top window" })
-	map("n", "<leader>l", "<C-w>l", { desc = "Move to right window" })
+	map("n", "<C-h>", "<C-w>h", { desc = "Move to left window" })
+	map("n", "<C-j>", "<C-w>j", { desc = "Move to bottom window" })
+	map("n", "<C-k>", "<C-w>k", { desc = "Move to top window" })
+	map("n", "<C-l>", "<C-w>l", { desc = "Move to right window" })
 
 	-- Resize windows
 	map("n", "<leader>rw", "<C-w>=", { desc = "Equalize window sizes" })
@@ -66,11 +67,6 @@ function M.setup()
 		require("telescope.builtin").help_tags()
 	end, { desc = "Help Tags" })
 
-	-- Git
-	map("n", "<leader>gs", "<cmd>Git<CR>", { desc = "Git Status" })
-	map("n", "<leader>gp", "<cmd>Git push<CR>", { desc = "Git Push" })
-	map("n", "<leader>gP", "<cmd>Git pull --rebase<CR>", { desc = "Git Pull (Rebase)" })
-
 	-- LSP
 	map("n", "<leader>ld", vim.diagnostic.open_float, { desc = "Line Diagnostics" })
 	map("n", "<leader>lD", "<cmd>Telescope diagnostics<CR>", { desc = "Workspace Diagnostics" })
@@ -96,24 +92,33 @@ function M.setup()
 		require("neotest").summary.toggle()
 	end, { desc = "Toggle Test Summary" })
 
-	-- Harpoon
 	map("n", "<leader>ha", function()
-		require("harpoon.mark").add_file()
+		harpoon:list():add()
 	end, { desc = "Add File to Harpoon" })
+
 	map("n", "<leader>hm", function()
-		require("harpoon.ui").toggle_quick_menu()
+		harpoon.ui:toggle_quick_menu(harpoon:list())
 	end, { desc = "Toggle Harpoon Menu" })
+
+	-- You can optionally use the Telescope UI instead
+	-- map("n", "<leader>hm", function()
+	--     toggle_telescope(harpoon:list())
+	-- end, { desc = "Toggle Harpoon Menu" })
+
 	map("n", "<leader>h1", function()
-		require("harpoon.ui").nav_file(1)
+		harpoon:list():select(1)
 	end, { desc = "Harpoon File 1" })
+
 	map("n", "<leader>h2", function()
-		require("harpoon.ui").nav_file(2)
+		harpoon:list():select(2)
 	end, { desc = "Harpoon File 2" })
+
 	map("n", "<leader>h3", function()
-		require("harpoon.ui").nav_file(3)
+		harpoon:list():select(3)
 	end, { desc = "Harpoon File 3" })
+
 	map("n", "<leader>h4", function()
-		require("harpoon.ui").nav_file(4)
+		harpoon:list():select(4)
 	end, { desc = "Harpoon File 4" })
 
 	-- UndoTree
