@@ -67,10 +67,44 @@ return {
 					},
 				},
 				lualine_y = { "progress" },
-				lualine_z = { "location" },
+				lualine_z = {
+					{ "location" },
+					{
+						function()
+							return vim.fn.system("tmux display-message -p '#S'"):gsub("\n", "")
+						end,
+					},
+				},
 			},
 			extensions = { "fugitive", "trouble", "lazy" },
 		},
+	},
+	{
+		"lukas-reineke/indent-blankline.nvim",
+		event = "BufReadPre",
+		opts = {
+			indent = {
+				char = "│",
+				tab_char = "│",
+			},
+			scope = { enabled = false },
+			exclude = {
+				filetypes = {
+					"help",
+					"alpha",
+					"dashboard",
+					"neo-tree",
+					"Trouble",
+					"trouble",
+					"lazy",
+					"mason",
+					"notify",
+					"toggleterm",
+					"lazyterm",
+				},
+			},
+		},
+		main = "ibl",
 	},
 	{
 		"nvim-treesitter/nvim-treesitter-context",

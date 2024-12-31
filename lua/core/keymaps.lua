@@ -121,6 +121,15 @@ function M.setup()
 		harpoon:list():select(4)
 	end, { desc = "Harpoon File 4" })
 
+	-- Toggle between harpoon files
+	map("n", "<C-n>", function()
+		harpoon:list():next()
+	end, { desc = "Next harpoon file" })
+
+	map("n", "<C-p>", function()
+		harpoon:list():prev()
+	end, { desc = "Previous harpoon file" })
+
 	-- UndoTree
 	map("n", "<leader>u", "<cmd>UndotreeToggle<CR>", { desc = "Toggle UndoTree" })
 
@@ -129,7 +138,19 @@ function M.setup()
 
 	-- tmux-sessionizer
 	map("n", "<C-f>", "<cmd>silent !tmux neww tmux-sessionizer<CR>", { desc = "Sessionizer" })
+	-- Split vertical with new session
+	map("n", "<leader>tv", "<cmd>silent !tmux-sessionizer -v<CR>", { desc = "Sessionizer (Vertical Split)" })
 
+	-- Split horizontal with new session
+	map("n", "<leader>th", "<cmd>silent !tmux-sessionizer -h<CR>", { desc = "Sessionizer (Horizontal Split)" })
+
+	-- Move lines
+	map("n", "<A-j>", ":m .+1<CR>==", { desc = "Move line down" })
+	map("n", "<A-k>", ":m .-2<CR>==", { desc = "Move line up" })
+	map("i", "<A-j>", "<Esc>:m .+1<CR>==gi", { desc = "Move line down" })
+	map("i", "<A-k>", "<Esc>:m .-2<CR>==gi", { desc = "Move line up" })
+	map("v", "<A-j>", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })
+	map("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
 	-- Fun
 	map("n", "<leader>mf", "<cmd>CellularAutomaton make_it_rain<CR>", { desc = "Make it Rain" })
 end

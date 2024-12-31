@@ -45,16 +45,40 @@ return {
 					"dist/",
 					"build/",
 					"%.lock",
+					"myenv/",
+					"%.venv/",
+					"venv/",
+					"env/",
+					"%.env/",
 				},
 			},
 			pickers = {
 				find_files = {
 					hidden = true,
-					file_ignore_patterns = { "^.git/" }, -- Explicitly ignore .git
+					-- Update this section too
+					file_ignore_patterns = {
+						"^.git/",
+						"^node_modules/",
+						"^myenv/",
+						"^.venv/",
+						"^venv/",
+						"^env/",
+						"^.env/",
+					},
 				},
 				live_grep = {
 					additional_args = function(opts)
-						return { "--hidden", "--glob", "!.git/" }
+						return {
+							"--hidden",
+							"--glob",
+							"!.git/",
+							"--glob",
+							"!node_modules/",
+							"--glob",
+							"!venv/",
+							"--glob",
+							"!.venv/",
+						}
 					end,
 				},
 			},
@@ -84,6 +108,53 @@ return {
 				["<leader>m"] = { name = "+misc" },
 			},
 		},
+	},
+	{
+		"stevearc/oil.nvim",
+		opts = {
+			skip_confirm_for_simple_edits = true,
+			default_file_explorer = true,
+			delete_to_trash = true,
+			experimental_watch_for_changes = true,
+			show_hidden = false,
+			-- Add back keymaps but with our desired configuration
+			keymaps = {
+				["<CR>"] = "actions.select",
+				["<C-v>"] = "actions.select_vsplit",
+				["<C-x>"] = "actions.select_split",
+				["<C-t>"] = "actions.select_tab",
+				["<C-p>"] = "actions.preview",
+				["<C-r>"] = "actions.refresh",
+				["_"] = "actions.parent",
+				["g."] = "actions.toggle_hidden",
+				["q"] = "actions.close",
+			},
+			use_default_keymaps = false,
+			view_options = {
+				show_hidden = false,
+				is_hidden_file = function(name, bufnr)
+					return vim.startswith(name, ".")
+				end,
+				is_always_hidden = function(name, bufnr)
+					return false
+				end,
+			},
+			float = {
+				padding = 2,
+				max_width = 0,
+				max_height = 0,
+				border = "rounded",
+				win_options = {
+					winblend = 0,
+				},
+			},
+		},
+		config = function(_, opts)
+			require("oil").setup(opts)
+			-- Add our custom binding for opening oil in current directory
+			vim.keymap.set("n", "-", "<CMD>Oil .<CR>", { desc = "Open current directory in oil" })
+			vim.keymap.set("n", "<leader>e", "<CMD>Oil .<CR>", { desc = "Open current directory in oil" })
+		end,
 	},
 	{
 		"ThePrimeagen/harpoon",

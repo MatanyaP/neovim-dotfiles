@@ -40,7 +40,7 @@ require("lazy").setup({
 			disabled_plugins = {
 				"gzip",
 				"matchit",
-				"matchparen",
+				-- "matchparen",
 				"tarPlugin",
 				"tohtml",
 				"tutor",

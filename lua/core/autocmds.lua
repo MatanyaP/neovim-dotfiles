@@ -35,3 +35,39 @@ autocmd("LspAttach", {
 		end
 	end,
 })
+
+-- Python-specific settings
+-- In core/autocmds.lua
+local python_group = augroup("PythonGroup", {})
+autocmd("FileType", {
+	group = python_group,
+	pattern = "python",
+	callback = function()
+		-- Use treesitter for indentation
+		vim.bo.indentexpr = "nvim_treesitter#indent()"
+
+		-- Disable other indentation methods to avoid conflicts
+		vim.bo.autoindent = false
+		vim.bo.smartindent = false
+		vim.bo.cindent = false
+
+		-- PEP 8 settings
+		vim.bo.tabstop = 4
+		vim.bo.softtabstop = 4
+		vim.bo.shiftwidth = 4
+		vim.bo.expandtab = true
+
+		-- Enable these options for better indentation behavior
+		vim.bo.indentkeys = table.concat({
+			"0{,0},0),0]", -- Indent after brackets
+			":", -- Indent after :
+			"<:>", -- Indent after :
+			"e", -- Else
+			"!^F", -- Don't indent preprocessor
+			"o", -- Open new line
+			"O", -- Open new line above
+			"0#", -- Don't indent comments
+			"<>>", -- Indent after >
+		}, ",")
+	end,
+})
