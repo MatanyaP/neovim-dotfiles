@@ -49,4 +49,12 @@ return {
 			{ "<leader>gP", "<cmd>Git pull --rebase<cr>", desc = "Git pull (rebase)" },
 		},
 	},
+	{
+		"sindrets/diffview.nvim",
+		event = "VeryLazy",
+		keys = {
+			{ "<leader>gv", "<cmd>DiffviewOpen<cr>", desc = "Open Diffview" },
+			{ "<leader>gc", "<cmd>DiffviewFileHistory %<cr>", desc = "File History" },
+		},
+	},
 }

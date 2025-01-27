@@ -76,11 +76,6 @@ function M.setup()
 		vim.lsp.buf.format({ async = true })
 	end, { desc = "Format Document" })
 
-	-- Trouble
-	map("n", "<leader>xx", "<cmd>TroubleToggle<CR>", { desc = "Toggle Trouble" })
-	map("n", "<leader>xw", "<cmd>Trouble workspace_diagnostics<CR>", { desc = "Workspace Diagnostics" })
-	map("n", "<leader>xd", "<cmd>Trouble document_diagnostics<CR>", { desc = "Document Diagnostics" })
-
 	-- Tests
 	map("n", "<leader>tn", function()
 		require("neotest").run.run()

@@ -116,7 +116,7 @@ return {
 			default_file_explorer = true,
 			delete_to_trash = true,
 			experimental_watch_for_changes = true,
-			show_hidden = false,
+			show_hidden = true,
 			-- Add back keymaps but with our desired configuration
 			keymaps = {
 				["<CR>"] = "actions.select",
@@ -131,7 +131,7 @@ return {
 			},
 			use_default_keymaps = false,
 			view_options = {
-				show_hidden = false,
+				show_hidden = true,
 				is_hidden_file = function(name, bufnr)
 					return vim.startswith(name, ".")
 				end,
@@ -211,6 +211,12 @@ return {
 					end, { buffer = cx.bufnr })
 				end,
 			})
+		end,
+	},
+	{
+		"tzachar/local-highlight.nvim",
+		config = function()
+			require("local-highlight").setup()
 		end,
 	},
 }

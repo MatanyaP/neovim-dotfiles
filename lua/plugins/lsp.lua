@@ -11,11 +11,7 @@ return {
 			diagnostics = {
 				underline = true,
 				update_in_insert = false,
-				virtual_text = {
-					spacing = 4,
-					source = "if_many",
-					prefix = "●",
-				},
+				virtual_text = false,
 				severity_sort = true,
 				float = {
 					focusable = true,
@@ -38,7 +34,37 @@ return {
 						},
 					},
 				},
-				pyright = {},
+				pyright = {
+					cmd = { "pyright-langserver", "--stdio" },
+					filetypes = { "python" },
+					root_dir = function(fname)
+						return require("lspconfig.util").root_pattern(
+							"pyproject.toml",
+							"setup.py",
+							"setup.cfg",
+							"requirements.txt",
+							"Pipfile",
+							".git"
+						)(fname) or vim.fn.getcwd()
+					end,
+					settings = {
+						python = {
+							analysis = {
+								autoSearchPaths = true,
+								useLibraryCodeForTypes = true,
+								diagnosticMode = "workspace",
+								typeCheckingMode = "basic",
+							},
+						},
+					},
+					single_file_support = true,
+				},
+				ruff = {
+					on_attach = function(client, bufnr)
+						-- Disable hover in favor of pyright
+						client.server_capabilities.hoverProvider = false
+					end,
+				},
 				ts_ls = {},
 				rust_analyzer = {},
 				html = {},
@@ -53,7 +79,15 @@ return {
 			local capabilities = vim.tbl_deep_extend(
 				"force",
 				vim.lsp.protocol.make_client_capabilities(),
-				require("cmp_nvim_lsp").default_capabilities()
+				require("cmp_nvim_lsp").default_capabilities(),
+				{
+					textDocument = {
+						definition = {
+							dynamicRegistration = true,
+							linkSupport = true,
+						},
+					},
+				}
 			)
 
 			local lspconfig = require("lspconfig")
@@ -61,11 +95,87 @@ return {
 			-- Setup diagnostics
 			vim.diagnostic.config(opts.diagnostics)
 
-			-- Setup servers
+			-- Create autocommand for Python files
+			vim.api.nvim_create_autocmd("FileType", {
+				pattern = "python",
+				callback = function(args)
+					local buffer = args.buf
+					-- Check if pyright is already running
+					local has_pyright = false
+					for _, client in ipairs(vim.lsp.get_clients({ bufnr = buffer })) do
+						if client.name == "pyright" then
+							has_pyright = true
+							break
+						end
+					end
+
+					if not has_pyright then
+						-- Start pyright with debug info
+						vim.notify("Starting Pyright...", vim.log.levels.INFO)
+						local ok = pcall(vim.cmd, "LspStart pyright")
+						if not ok then
+							vim.notify("Failed to start Pyright!", vim.log.levels.ERROR)
+						end
+					end
+				end,
+			})
+			vim.api.nvim_create_user_command("VerifyPyright", function()
+				-- Check pyright installation
+				local npm_pyright = vim.fn.system("which pyright-langserver")
+				vim.notify("Pyright path: " .. npm_pyright, vim.log.levels.INFO)
+
+				-- Check if it's working
+				local clients = vim.lsp.get_active_clients()
+				local has_pyright = false
+				for _, client in ipairs(clients) do
+					if client.name == "pyright" then
+						has_pyright = true
+						break
+					end
+				end
+				vim.notify("Pyright active: " .. tostring(has_pyright), vim.log.levels.INFO)
+			end, {})
+
+			-- Setup servers with modified config
 			for server, server_opts in pairs(opts.servers) do
+				-- Add capabilities to each server
 				server_opts.capabilities = capabilities
+
+				-- Special handling for pyright
+				if server == "pyright" then
+					server_opts.settings = vim.tbl_deep_extend("force", server_opts.settings or {}, {
+						python = {
+							analysis = {
+								autoSearchPaths = true,
+								useLibraryCodeForTypes = true,
+								diagnosticMode = "workspace",
+								indexing = true,
+							},
+						},
+					})
+
+					-- Handle exit with code 1
+					server_opts.on_exit = function(code, signal)
+						if code == 1 and signal == 0 then
+							-- Ignore expected exit
+							return
+						end
+					end
+				end
+
+				-- Setup the server
 				lspconfig[server].setup(server_opts)
 			end
+
+			-- Additional setup for better LSP experience
+			vim.api.nvim_create_autocmd("LspAttach", {
+				callback = function(args)
+					local client = vim.lsp.get_client_by_id(args.data.client_id)
+					if client and client.server_capabilities.definitionProvider then
+						vim.bo[args.buf].tagfunc = "v:lua.vim.lsp.tagfunc"
+					end
+				end,
+			})
 		end,
 	},
 	{
@@ -81,24 +191,37 @@ return {
 				"eslint_d",
 				"shellcheck",
 				"shfmt",
+				-- remove pyright from here as we'll install it via npm
 			},
 		},
 		config = function(_, opts)
-			require("mason").setup(opts)
-			local mr = require("mason-registry")
-			for _, tool in ipairs(opts.ensure_installed) do
-				local p = mr.get_package(tool)
-				if not p:is_installed() then
-					p:install()
-				end
-			end
+			local mason = require("mason")
+			mason.setup({
+				install_root_dir = vim.fn.stdpath("data") .. "/mason",
+				ui = {
+					check_outdated_packages_on_open = false,
+					border = "rounded",
+				},
+			})
+
+			-- Store ensure_installed packages globally for our custom command
+			_G.mason_ensure_installed = opts.ensure_installed
 		end,
 	},
+
 	{
 		"williamboman/mason-lspconfig.nvim",
 		opts = {
 			automatic_installation = true,
 		},
+	},
+	{
+		"rachartier/tiny-inline-diagnostic.nvim",
+		event = "VeryLazy", -- Or `LspAttach`
+		priority = 1000, -- needs to be loaded in first
+		config = function()
+			require("tiny-inline-diagnostic").setup()
+		end,
 	},
 	{
 		"hrsh7th/nvim-cmp",

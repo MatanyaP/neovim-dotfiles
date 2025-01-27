@@ -7,4 +7,5 @@ return {
 	{ import = "plugins.git" },
 	{ import = "plugins.colorscheme" },
 	{ import = "plugins.format" },
+	{ import = "plugins.csv" },
 }

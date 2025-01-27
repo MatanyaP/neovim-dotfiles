@@ -20,6 +20,11 @@ function M.setup()
 	if keymaps_ok then
 		keymaps.setup()
 	end
+
+	-- local utils_ok, utils = safe_require("core.utils")
+	-- if utils_ok then
+	-- 	utils.create_hebrew_block_augroup()
+	-- end
 end
 
 return M

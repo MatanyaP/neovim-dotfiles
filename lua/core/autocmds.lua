@@ -46,8 +46,8 @@ autocmd("FileType", {
 		-- Use treesitter for indentation
 		vim.bo.indentexpr = "nvim_treesitter#indent()"
 
-		-- Disable other indentation methods to avoid conflicts
-		vim.bo.autoindent = false
+		-- Keep autoindent as fallback but disable smartindent
+		vim.bo.autoindent = true
 		vim.bo.smartindent = false
 		vim.bo.cindent = false
 
@@ -57,16 +57,20 @@ autocmd("FileType", {
 		vim.bo.shiftwidth = 4
 		vim.bo.expandtab = true
 
-		-- Enable these options for better indentation behavior
+		-- Set textwidth for docstrings and comments
+		vim.bo.textwidth = 88 -- Match black formatter's line length
+
+		-- Improved indentkeys for Python
 		vim.bo.indentkeys = table.concat({
 			"0{,0},0),0]", -- Indent after brackets
 			":", -- Indent after :
-			"<:>", -- Indent after :
-			"e", -- Else
-			"!^F", -- Don't indent preprocessor
-			"o", -- Open new line
-			"O", -- Open new line above
 			"0#", -- Don't indent comments
+			"e", -- Indent 'else' and similar keywords
+			"0r", -- Indent return
+			"0d", -- Indent def
+			"0c", -- Indent class
+			"0y", -- Indent yield
+			"0w", -- Indent with
 			"<>>", -- Indent after >
 		}, ",")
 	end,
