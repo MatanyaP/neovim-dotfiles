@@ -3,10 +3,7 @@ return {
 		"nvim-telescope/telescope.nvim",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
-			{ "nvim-telescope/telescope-fzf-native.nvim", enabled = false },
-			{
-				"natecraddock/telescope-zf-native.nvim", -- Use pure Lua implementation instead
-			},
+			-- Remove the fzf native dependency entirely
 		},
 		cmd = "Telescope",
 		version = false,
@@ -58,7 +55,6 @@ return {
 			pickers = {
 				find_files = {
 					hidden = true,
-					-- Update this section too
 					file_ignore_patterns = {
 						"^.git/",
 						"^node_modules/",
@@ -89,7 +85,7 @@ return {
 		config = function(_, opts)
 			local telescope = require("telescope")
 			telescope.setup(opts)
-			telescope.load_extension("fzf")
+			-- Remove the fzf extension load
 		end,
 	},
 	{
