@@ -3,7 +3,10 @@ return {
 		"nvim-telescope/telescope.nvim",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
-			{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+			{ "nvim-telescope/telescope-fzf-native.nvim", enabled = false },
+			{
+				"natecraddock/telescope-zf-native.nvim", -- Use pure Lua implementation instead
+			},
 		},
 		cmd = "Telescope",
 		version = false,
