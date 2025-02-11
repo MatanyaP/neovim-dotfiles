@@ -131,13 +131,13 @@ function M.setup()
 	-- Zen Mode
 	map("n", "<leader>z", "<cmd>ZenMode<CR>", { desc = "Toggle Zen Mode" })
 
-	-- tmux-sessionizer
-	map("n", "<C-f>", "<cmd>silent !tmux neww tmux-sessionizer<CR>", { desc = "Sessionizer" })
-	-- Split vertical with new session
-	map("n", "<leader>tv", "<cmd>silent !tmux-sessionizer -v<CR>", { desc = "Sessionizer (Vertical Split)" })
-
-	-- Split horizontal with new session
-	map("n", "<leader>th", "<cmd>silent !tmux-sessionizer -h<CR>", { desc = "Sessionizer (Horizontal Split)" })
+	-- -- tmux-sessionizer
+	-- map("n", "<C-f>", "<cmd>silent !tmux neww tmux-sessionizer<CR>", { desc = "Sessionizer" })
+	-- -- Split vertical with new session
+	-- map("n", "<leader>tv", "<cmd>silent !tmux-sessionizer -v<CR>", { desc = "Sessionizer (Vertical Split)" })
+	--
+	-- -- Split horizontal with new session
+	-- map("n", "<leader>th", "<cmd>silent !tmux-sessionizer -h<CR>", { desc = "Sessionizer (Horizontal Split)" })
 
 	-- Move lines
 	map("n", "<A-j>", ":m .+1<CR>==", { desc = "Move line down" })

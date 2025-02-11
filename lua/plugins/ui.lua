@@ -94,13 +94,13 @@ return {
 					},
 				},
 				lualine_x = {
-					{
-						function()
-							return vim.fn.system("xset -q | grep LED | awk '{print $10}' | cut -c5"):match("1") and "HE"
-								or "EN"
-						end,
-						color = { fg = "#ff9e64" },
-					},
+					-- {
+					-- 	function()
+					-- 		return vim.fn.system("xset -q | grep LED | awk '{print $10}' | cut -c5"):match("1") and "HE"
+					-- 			or "EN"
+					-- 	end,
+					-- 	color = { fg = "#ff9e64" },
+					-- },
 					"filetype",
 					{
 						"diff",

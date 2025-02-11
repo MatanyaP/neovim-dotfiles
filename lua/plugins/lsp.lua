@@ -35,18 +35,6 @@ return {
 					},
 				},
 				pyright = {
-					cmd = { "pyright-langserver", "--stdio" },
-					filetypes = { "python" },
-					root_dir = function(fname)
-						return require("lspconfig.util").root_pattern(
-							"pyproject.toml",
-							"setup.py",
-							"setup.cfg",
-							"requirements.txt",
-							"Pipfile",
-							".git"
-						)(fname) or vim.fn.getcwd()
-					end,
 					settings = {
 						python = {
 							analysis = {
@@ -57,7 +45,6 @@ return {
 							},
 						},
 					},
-					single_file_support = true,
 				},
 				ruff = {
 					on_attach = function(client, bufnr)
@@ -76,19 +63,15 @@ return {
 			},
 		},
 		config = function(_, opts)
-			local capabilities = vim.tbl_deep_extend(
-				"force",
-				vim.lsp.protocol.make_client_capabilities(),
-				require("cmp_nvim_lsp").default_capabilities(),
-				{
+			local capabilities =
+				vim.tbl_deep_extend("force", vim.lsp.protocol.make_client_capabilities(), require("cmp_nvim_lsp").default_capabilities(), {
 					textDocument = {
 						definition = {
 							dynamicRegistration = true,
 							linkSupport = true,
 						},
 					},
-				}
-			)
+				})
 
 			local lspconfig = require("lspconfig")
 

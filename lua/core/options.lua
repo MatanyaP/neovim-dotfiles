@@ -29,7 +29,8 @@ opt.undofile = true
 opt.undolevels = 10000
 opt.swapfile = false
 opt.backup = false
-opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
+-- Modified for Windows compatibility
+opt.undodir = vim.fn.stdpath("data") .. "/undodir"
 
 -- Search
 opt.ignorecase = true
@@ -43,12 +44,9 @@ opt.updatetime = 250
 opt.hidden = true
 opt.history = 100
 
--- Netrw configuration
-vim.g.netrw_browse_split = 0
-vim.g.netrw_banner = 0
-vim.g.netrw_winsize = 25
-vim.g.netrw_liststyle = 3
-
 -- Disable netrw
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
+
+-- File path handling for Windows
+opt.shellslash = true
