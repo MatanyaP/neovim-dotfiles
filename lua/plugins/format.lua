@@ -25,13 +25,19 @@ return {
 				html = { { "prettier" } },
 				json = { { "prettier" } },
 				yaml = { { "prettier" } },
-				markdown = { { "prettier" } },
+				markdown = {},
 				rust = { "rustfmt" },
 				go = { "gofmt" },
+			},
+			formatters = {
+				stylua = {
+					prepend_args = { "--column-width", "140" },
+				},
 			},
 			format_on_save = {
 				timeout_ms = 500,
 				lsp_fallback = true,
+				exclude_filetypes = { "markdown" },
 			},
 		},
 	},
