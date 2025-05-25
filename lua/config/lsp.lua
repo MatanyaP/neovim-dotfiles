@@ -5,6 +5,12 @@ M.on_attach = function(client, bufnr)
 	local map = function(lhs, rhs, desc)
 		vim.keymap.set("n", lhs, rhs, { buffer = bufnr, desc = desc })
 	end
+	vim.diagnostic.config({
+		virtual_text = true, -- Show diagnostic text inline
+		signs = true,
+		update_in_insert = false,
+		severity_sort = true,
+	})
 
 	map("gd", vim.lsp.buf.definition, "Go to definition")
 	map("gi", vim.lsp.buf.implementation, "Go to implementation")
@@ -18,6 +24,7 @@ M.on_attach = function(client, bufnr)
 end
 
 -- nvim-cmp capability compat
-M.capabilities = vim.tbl_deep_extend("force", vim.lsp.protocol.make_client_capabilities(), require("cmp_nvim_lsp").default_capabilities())
+M.capabilities = vim.tbl_deep_extend("force", vim.lsp.protocol.make_client_capabilities(),
+	require("cmp_nvim_lsp").default_capabilities())
 
 return M
